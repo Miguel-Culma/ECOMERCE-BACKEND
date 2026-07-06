@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema(
         },
         name: {
           type: String,
-          required: true,
+          required: false,
         },
         price: {
           type: Number,
@@ -28,7 +28,7 @@ const orderSchema = new mongoose.Schema(
         },
         imageURL: {
           type: String,
-          required: true,
+          required: false,
         },
       },
     ],
