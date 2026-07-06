@@ -35,8 +35,8 @@ const PORT = 3001;
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/cart', cartRoutes);
-app.use('api/orders', orderRoutes);
-app.use('api/webhook', webHookRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/webhook', webHookRoutes);
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
