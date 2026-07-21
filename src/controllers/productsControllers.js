@@ -4,7 +4,6 @@ import { ZodError } from 'zod';
 // crear producto
 export const createProduct = async (req, res) => {
   try {
-    console.log('entre a crear producto', req.body);
     const { name, description, price, stock, imageURL } = productSchema.parse(
       req.body
     );
@@ -35,7 +34,6 @@ export const createProduct = async (req, res) => {
 };
 
 export const updateProducts = async (req, res) => {
-  console.log('entre a actualizarProducto', req.body, req.params.id);
   try {
     // validr los datos con zod
     const validateData = productSchema.partial().parse(req.body);
@@ -65,9 +63,7 @@ export const updateProducts = async (req, res) => {
 
 export const getProductsById = async (req, res) => {
   try {
-    console.log(req.params.id);
     const product = await productModel.findById(req.params.id);
-    console.log(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Producto no encotrado' });
     }

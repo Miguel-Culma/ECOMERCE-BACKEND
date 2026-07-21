@@ -46,7 +46,7 @@ export const createOrder = async (req, res) => {
 
     // crear prefencia en mercado pago con external preference
 
-    // crea el checkout oficial.
+    // crea el checkout oficial
     const result = await preferences.create({
       body: {
         // datos del pago
@@ -57,17 +57,22 @@ export const createOrder = async (req, res) => {
         external_reference: savedOrder._id.toString(), // guarda a que orden pertence el pago
         back_urls: {
           success: `${process.env.FRONTEND_URL}/payment/success`,
-          failure: `${process.env.FRONTEND_URL}/payment/success`, // URLs que redirigen al usuario después del pago
-          pending: `${process.env.FRONTEND_URL}/payment/success`,
+          failure: `${process.env.FRONTEND_URL}/payment/failure`, // URLs que redirigen al usuario después del pago
+          pending: `${process.env.FRONTEND_URL}/payment/pending`,
         },
-        notification_url: `${process.env.BACKEND_URL || 'http://localhost:3001/api/webhook'}`,
-      },
-      metadata: {
-        order_id: savedOrder._id.toString(), // Guarda el ID del checkout
+        auto_return: 'approved',
+        notification_url: `${process.env.BACKEND_URL}/api/webhook`, //dirección donde Mercado Pago enviará el Webhook
+        metadata: {
+          order_id: savedOrder._id.toString(), // Guarda el ID del checkout
+        },
       },
     });
 
-    console.log('Resultado de la preferencia creada', result);
+    //console.log(
+    // 'Resultado de la preferencia creada',
+    // result,
+    //'fin de la preferencia creada'
+    // );
     // Obtener el identificador de la preferencia
 
     savedOrder.mercadoPagoData.preferenceId = result.id;

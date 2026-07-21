@@ -74,16 +74,16 @@ export const loginUser = async (req, res) => {
 
     //obtener usuario y contraseña
     const { userEmail, userPass } = loginSchema.parse(req.body);
-    // console.log(userEmail, userPass);
-
+    
     // buscar al usuario en la bd por email
     const user = await userModel.findOne({ email: userEmail });
-    // comparar contraseñas
-    const isPassValid = await bcrypt.compare(userPass, user.password); // true o false
 
     if (!user) {
       return res.status(400).json({ message: 'Credenciales invalidas' });
     }
+    // comparar contraseñas
+    const isPassValid = await bcrypt.compare(userPass, user.password); // true o false
+
     if (!isPassValid) {
       return res.status(400).json({ message: 'Credenciales invalidas' });
     }
@@ -108,11 +108,12 @@ export const loginUser = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-        maxAge: 60 * 60 * 100,
+        maxAge: 60 * 60 * 1000,
       })
       .status(200)
       .json(userData);
   } catch (error) {
+    console.error(error.message);
     if (error instanceof ZodError) {
       return res.status(400).json(
         error.issues.map((issue) => ({
@@ -120,7 +121,6 @@ export const loginUser = async (req, res) => {
         }))
       );
     }
-
     return res
       .status(500)
       .json({ message: 'Error al iniciar sesion', error: error });
@@ -130,7 +130,6 @@ export const loginUser = async (req, res) => {
 export const profile = async (req, res) => {
   //extraer el accesstoken enviado por el cliente
   const token = req.cookies.accessToken;
-
   try {
     // decodificar token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -146,13 +145,13 @@ export const profile = async (req, res) => {
       userName: user.name,
     });
   } catch (error) {
+    console.error(error.message, 'error profile');
     return res.status(404).json({ message: 'No autorizado' });
   }
 };
 
 export const logOutUser = (req, res) => {
   try {
-    console.log('entre en cerrar sesion');
     return res
       .clearCookie('accessToken', {
         httpOnly: true,

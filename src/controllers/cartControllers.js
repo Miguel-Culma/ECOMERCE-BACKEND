@@ -4,7 +4,6 @@ import { cartSchema } from '../schemas/cartSchema.js';
 // añadir al carrito
 export const addToCart = async (req, res) => {
   try {
-    console.log(req.body, 'bodyy');
     const { userId, productId, quantity } = cartSchema.parse(req.body);
     const cart = await cartModel.findOne({ userId });
     // Crear carrito si no existe el carrito
@@ -105,8 +104,6 @@ export const deleteCart = async (req, res) => {
       productId: req.body.productId,
       quantity: 1,
     });
-    console.log('eliminar carrito', userId, productId);
-
     const cart = await cartModel.findOne({ userId });
     //eliminar el producto carrito
     cart.products = cart.products.filter(
